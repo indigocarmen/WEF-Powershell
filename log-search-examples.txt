@@ -1,0 +1,10 @@
+where(ScriptBlockText=i/-v* 2/) #alerts on powershell v2 being run
+where(ScriptBlockText=i/dism.exe/) #You can install .NET to get access to powershell 2, so lets alert on dism.exe being used (could yield false positives)
+where(ScriptBlockText=i/-nop*/) #skips loading profile.ps1 and avoids any logging
+where(ScriptBlockText=i/encoded|-e /) #lets a user run encoded commands, such as base64 encoding commands to confuse our logging
+where(ScriptBlockText=i/-ExecutionPolicy|-ep|-exp|-exec) #bypasses the execution policy, but may generate false positives
+where(ScriptBlockText=i/windowStyle hidden/) #prevents creation of an actual PS window, used maliciously
+where(ScriptBlockText=i/*Net.WebClient*/) #used maliciously quite frequently to download malicious text files to be used as commands
+where(ScriptBlockText=i/*DownloadString*/) #can download strings from sites like pastebin
+where(ScriptBlockText=i/^.*CommandLine=.*([^`]*`){2,}[^`]*.*$/) #looks for suspicious backticks that can be used to obfuscate commands
+where(i/mimikatz/) #seems obvious, but in this logset we don't want this showing up
